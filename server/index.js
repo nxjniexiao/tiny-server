@@ -10,4 +10,4 @@ srv.listen(3000, '192.168.8.101', () => {
   const address = srv.address().address;
   const port = srv.address().port;
   console.log('http://%s:%s', address, port);
-})
+});
