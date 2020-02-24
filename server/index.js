@@ -5,9 +5,29 @@ const srv = http.createServer((req, res) => {
   // 静态文件托管
   manageStaticFiles(req, res, '');
 });
-// 本机 IP 地址：192.168.8.101
-srv.listen(3000, '192.168.8.101', () => {
-  const address = srv.address().address;
+const IPAddress = getIPAddress();
+srv.listen(8082, () => {
   const port = srv.address().port;
-  console.log('http://%s:%s', address, port);
+  console.log(
+    'Your application is running here:',
+    `http://localhost:${port} or`,
+    `http://${IPAddress}:${port}`
+  );
 });
+// 获取本机IP
+function getIPAddress() {
+  const interfaces = require('os').networkInterfaces();
+  for (let devName in interfaces) {
+    const iface = interfaces[devName];
+    for (let i = 0; i < iface.length; i++) {
+      const alias = iface[i];
+      if (
+        alias.family === 'IPv4' &&
+        alias.address !== '127.0.0.1' &&
+        !alias.internal
+      ) {
+        return alias.address;
+      }
+    }
+  }
+}
