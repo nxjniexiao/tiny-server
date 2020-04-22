@@ -1,6 +1,7 @@
-# serving-static-files-without-frameworks
+# tiny-server
 
-不使用其他框架，使用 Node.js 开启一个托管静态文件的服务，并让局域网内的其他设备访问。
+不使用其他框架，使用 Node.js 开启一个小型后台用于编写 demo 。
 
-1. 把 `server` 文件夹拷贝至需要托管的静态文件夹中；
-2. 运行 `node server`。
+1. 克隆此仓库至自己的 demo 项目中；
+2. 新建 js 文件，如 `server.js`，并在其中引入 tiny-server ： `require('./tiny-server/src');`；
+3. 在想要托管的位置运行 js 文件：`node server.js` 。

@@ -3,7 +3,7 @@ const manageStaticFiles = require('./manageStaticFiles.js');
 // 创建服务器
 const srv = http.createServer((req, res) => {
   // 静态文件托管
-  manageStaticFiles(req, res, '');
+  manageStaticFiles(req, res);
 });
 const IPAddress = getIPAddress();
 srv.listen(8082, () => {

@@ -16,7 +16,7 @@ const file = {
   // 封装 fs.readdir，返回一个 Promise 对象
   readDir: function(filePath) {
     return new Promise((resolve, reject) => {
-      fs.readdir(filePath, (err, files) => {
+      fs.readdir(filePath, {withFileTypes: true}, (err, files) => {
         if (err) {
           return reject(err);
         }
@@ -26,10 +26,9 @@ const file = {
   },
   // 封装函数：获得符合平台特性的绝对路径
   getNormalizedFilePath: function(filePath) {
-    // fs.readFile() 解析路径时，当前工作目录是启动 server 时的目录，
-    // 不是 js 文件所在的目录。而 __dirname 表示 js 文件所在目录。
-    // 所以最好使用 path.join() 根据平台特性生成绝对路径。
-    return path.join(__dirname, "../", filePath);
+    // fs.readFile() 解析路径时，当前工作目录是启动 server 时的目录，不是 js 文件所在的目录。
+    // 因此最好使用 path.join() 根据平台特性生成绝对路径。
+    return path.join(filePath);
   },
   // 封装函数：返回后缀名
   getExtname(filePath) {

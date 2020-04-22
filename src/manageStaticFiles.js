@@ -3,26 +3,28 @@ const file = require("./file.js");
 const mimeTypes = require("./mime.json");
 const getHtmlStr = require("./getHtmlStr.js");
 
-function manageStaticFiles(req, res, staticFolderPath) {
+function manageStaticFiles(req, res) {
   const urlObj = url.parse(req.url, true); // true: urlObj.query 被转化为对象
   const pathname = decodeURIComponent(urlObj.pathname); // 解码
-  const extname = file.getExtname(pathname); // 后缀名
   switch (pathname) {
     case "/favicon.ico":
+      res.end();
       return;
     default:
       response();
   }
   function response() {
-    const filePath = staticFolderPath + pathname;
+    const cwd = process.cwd(); // current working directory
+    const filePath = cwd + '\\' + pathname;
     const filePathNormalized = file.getNormalizedFilePath(filePath); // 绝对路径
-    if (!extname) {
-      // 无后缀名，返回包含文件列表的 HTML
+    file.readFile(filePathNormalized)
+    .then(data => {
+      // 文件
+      resWithFile(filePathNormalized);
+    }).catch(err => {
+      // 文件夹
       resWithHtml(pathname, filePathNormalized);
-      return;
-    }
-    // 有后缀名，返回文件
-    resWithFile(filePathNormalized);
+    });
   }
   // 封装函数，返回HTML
   function resWithHtml(prevPath, filePathNormalized) {
@@ -41,7 +43,8 @@ function manageStaticFiles(req, res, staticFolderPath) {
   }
   // 封装函数，返回文件
   function resWithFile(filePathNormalized) {
-    let contentType = mimeTypes[extname]; // 获取后缀名
+    const extname = file.getExtname(pathname); // 后缀名
+    let contentType = mimeTypes[extname]; // 获取后缀名对应的contentType
     if (/text|javascript/.test(contentType)) {
       contentType = contentType + ";charset=utf-8";
     }
