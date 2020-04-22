@@ -1,9 +1,17 @@
 const http = require('http');
 const manageStaticFiles = require('./manageStaticFiles.js');
+const manageJson = require('./manageJson.js');
 // 创建服务器
 const srv = http.createServer((req, res) => {
-  // 静态文件托管
-  manageStaticFiles(req, res);
+  const url = req.url;
+  const reg = /^\/json/;
+  if (reg.test(url)) {
+    // json 数据
+    manageJson(req, res);
+  } else {
+    // 静态文件托管
+    manageStaticFiles(req, res, '');
+  }
 });
 const IPAddress = getIPAddress();
 srv.listen(8082, () => {
