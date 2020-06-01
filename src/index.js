@@ -10,11 +10,11 @@ const srv = http.createServer((req, res) => {
     manageJson(req, res);
   } else {
     // 静态文件托管
-    manageStaticFiles(req, res, '');
+    manageStaticFiles(req, res, '/virtual/path');
   }
 });
 const IPAddress = getIPAddress();
-srv.listen(8082, () => {
+srv.listen(8030, () => {
   const port = srv.address().port;
   console.log(
     'Your application is running here:',

@@ -3,9 +3,19 @@ const file = require("./file.js");
 const mimeTypes = require("./mime.json");
 const getHtmlStr = require("./getHtmlStr.js");
 
-function manageStaticFiles(req, res) {
+/**
+ * 静态托管
+ * @param {Object} - req 请求
+ * @param {Object} - res 响应
+ * @param {string} - virtualPath 虚拟地址,如virtualPath = '/virtual/path/',
+ *                   访问'localhost:8030/virtual/path/index.html'时,会访问
+ *                   当前cwd()目录下的 'index.html'.
+ */
+function manageStaticFiles(req, res, virtualPath) {
   const urlObj = url.parse(req.url, true); // true: urlObj.query 被转化为对象
-  const pathname = decodeURIComponent(urlObj.pathname); // 解码
+  let pathname = decodeURIComponent(urlObj.pathname); // 解码
+  const reg = new RegExp('^' + virtualPath);
+  pathname = pathname.replace(reg, '');
   switch (pathname) {
     case "/favicon.ico":
       res.end();
@@ -15,7 +25,7 @@ function manageStaticFiles(req, res) {
   }
   function response() {
     const cwd = process.cwd(); // current working directory
-    const filePath = cwd + '\\' + pathname;
+    const filePath = cwd + pathname;
     const filePathNormalized = file.getNormalizedFilePath(filePath); // 绝对路径
     file.readFile(filePathNormalized)
     .then(data => {
