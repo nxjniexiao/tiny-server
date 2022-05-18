@@ -27,13 +27,17 @@ function manageStaticFiles(req, res, virtualPath) {
     const cwd = process.cwd(); // current working directory
     const filePath = cwd + pathname;
     const filePathNormalized = file.getNormalizedFilePath(filePath); // 绝对路径
-    file.readFile(filePathNormalized)
+    file.stat(filePathNormalized)
     .then(data => {
-      // 文件
-      resWithFile(filePathNormalized);
+      if (data.isDirectory()) {
+        // 文件夹
+        resWithHtml(pathname, filePathNormalized);
+      } else {
+        // 文件
+        resWithFile(filePathNormalized);
+      }
     }).catch(err => {
-      // 文件夹
-      resWithHtml(pathname, filePathNormalized);
+      resFailed("404 not found");
     });
   }
   // 封装函数，返回HTML
